@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+	<service uuid="1800">
+		<description>Generic Access Profile</description>
+
+		<characteristic uuid="2a00">
+			<properties read="true" const="true" />
+			<value>Logits System’s EkamKey</value>
+		</characteristic>
+
+		<characteristic uuid="2a01">
+			<properties read="true" const="true" />
+			<value type="hex">2400</value>
+		</characteristic>
+	</service>
+
+
+	<service uuid="6c6f6769-7473-11ab-82a8-0242ac130003" advertise="true">
+		<description>EkamKey Biometric Secrets</description>
+
+		<characteristic uuid="6c6f6769-7473-11ab-42ac-600030ea28ec" id="req_gatt_keychain">
+			<description>Keychain Request</description>
+			<properties write="true" const="true" />
+            <value varible_length="true" length="40" type="domain_name" />
+		</characteristic>
+
+		<characteristic uuid="6c6f6769-7473-11ab-4221-5941e773ee71" id="rsp_gatt_keychain">
+			<description>Keychain Response</description>
+			<properties read="true" const="true" />
+			<value varible_length="true" length="128" type="domain_name" />
+		</characteristic>
+
+		<characteristic uuid="6c6f6769-7473-11ab-4ed7-15914852ca6b" id="req_gatt_otp">
+			<description>OTP Request</description>
+			<properties write="true" const="true" />
+			<value varible_length="true" length="40" type="domain_name" />
+		</characteristic>
+
+		<characteristic uuid="6c6f6769-7473-11ab-470b-2964f9d71f5a" id="rsp_gatt_otp">
+			<description>OTP Response </description>
+			<properties read ="true" const="true" />
+			<value varible_length="true" length="16" type="domain_name" />
+		</characteristic>
+
+	</service>
+
