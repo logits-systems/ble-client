@@ -58,7 +58,7 @@
 					// Define a scan filter and prepare for interaction with ekamkey Service
 					log('Requesting Bluetooth Device...');
 					device  = await navigator.bluetooth.requestDevice({
-						filters: [{ services: ['battery_service'] }],
+						filters: [{ }],
 						optionalServices: [EKAMKEY_SVC_UUID]
 					});	
 					device.addEventListener('gattserverdisconnected', onDisconnected);	
