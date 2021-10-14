@@ -77,7 +77,12 @@
 					// Define a scan filter and prepare for interaction with ekamkey Service
 					log('Requesting Bluetooth Device...');
 					device  = await navigator.bluetooth.requestDevice({
+<<<<<<< HEAD
                         filters: [{services : [EKAMKEY_SVC_UUID]}]
+=======
+						filters: [{name : 'OnePlus 3T'}],
+						optionalServices: [EKAMKEY_SVC_UUID]
+>>>>>>> e3c8c28d02945d70da41efb3aa1a310b94284afa
 					});	
 					device.addEventListener('gattserverdisconnected', onDisconnected);	
 					// Connect to device GATT and perform attribute discovery
