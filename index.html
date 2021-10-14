@@ -12,6 +12,7 @@
 			var inboundChar;
 			var outboundChar;
 			var device;
+			var gattCharacteristic;
 			
 			// Define the Ekamkey UUIDs 
 			var EKAMKEY_SVC_UUID 	= "6c6f6769-7473-11ab-82a8-0242ac130003";
@@ -27,13 +28,30 @@
 				textarea.scrollTop = textarea.scrollHeight;
 			}
 
+            function isWebBLEAvailable()
+            {
+                if (!navigator.bluetooth) {
+                    log('Web Bluetooth is not available!');
+                    return false;
+                }
+                log('Web Bluetooth is available!');
+                return true;
+            }
+
+            async function bluetoothSend(text) {
+                log("You> " + text);
+                inboundChar.writeValue(new TextEncoder().encode(text+"\n"))
+            }
+
 			// Incoming GATT notification was received
 			async function incomingData(event){
+                log('Incoming data!\n');
+
 				// Read data from BLE ekamkey peer
-				let readInValue = await outboundChar.readValue();
+				let readInValue = event.target.value;
 				let decoder = new TextDecoder('utf-8');
-				// Log the incoming string (format slightly)
-				log(" <- " + decoder.decode(readInValue).replace('\r','\r <- ').replace('\n','').replace('\0',''));
+				log(" <- " + decoder.decode(readInValue));
+                bluetoothSend("Data Received !");
 			}
 
 			async function onDisconnected()
@@ -55,23 +73,29 @@
 			// Scan, connect and explore Ekamkey BLE device
 			async function ble_connect() {
 				try {
+                    isWebBLEAvailable();
 					// Define a scan filter and prepare for interaction with ekamkey Service
 					log('Requesting Bluetooth Device...');
 					device  = await navigator.bluetooth.requestDevice({
-						filters: [{name: 'CLv2'}],
-						optionalServices: [EKAMKEY_SVC_UUID]
+                        filters: [{services : [EKAMKEY_SVC_UUID]}]
 					});	
 					device.addEventListener('gattserverdisconnected', onDisconnected);	
 					// Connect to device GATT and perform attribute discovery
 					server = await device.gatt.connect();
+
 					const service = await server.getPrimaryService(EKAMKEY_SVC_UUID);
 					inboundChar = await service.getCharacteristic(REQUEST_CHAR_UUID);
-					outboundChar = await service.getCharacteristic(RESPONSE_CHAR_UUID);
-					const flowcontrolChar = await service.getCharacteristic(CNTRL_CHAR_UUID);
+
+					//outboundChar = await service.getCharacteristic(RESPONSE_CHAR_UUID);
+                    //const flowcontrolChar = await service.getCharacteristic(CNTRL_CHAR_UUID);
 					// Subscribe to notifications
-					await flowcontrolChar.startNotifications();
-					flowcontrolChar.addEventListener('characteristicvaluechanged', incomingData);
-					log('Ready to communicate!\n');
+					//await flowcontrolChar.startNotifications();
+
+					//flowcontrolChar.addEventListener('characteristicvaluechanged', incomingData);
+                    
+                    inboundChar.addEventListener('characteristicvaluechanged', incomingData);
+                    inboundChar.startNotifications();
+                    log('Ready to communicate!\n');
 				}
 				catch(error) {
 					log('Failed: ' + error);
@@ -123,15 +147,17 @@
 		<textarea id="log" rows="20" cols="60" ></textarea>
 		<br/><br/><br/>
 
-		//<button type="button" onclick="sendAT('ATrI')">
-		//	Send ATrI
-		//</button>
+	<!---
+		<button type="button" onclick="sendAT('ATrI')">
+			Send ATrI
+		</button>
 
-		//<br/><br/>
-		//<input type="text" id="cmd" onkeydown="wasEnter(this)">
-		//<button type="button" onclick="sendAT(document.getElementById('cmd').value)">
-		//	Transmit Command
-		//</button>
+		<br/><br/>
+		<input type="text" id="cmd" onkeydown="wasEnter(this)">
+		<button type="button" onclick="sendAT(document.getElementById('cmd').value)">
+			Transmit Command
+		</button>
+	--->	
 
 	</body>
 
