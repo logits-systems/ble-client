@@ -15,10 +15,10 @@
 			var gattCharacteristic;
 			
 			// Define the Ekamkey UUIDs 
-			var EKAMKEY_SVC_UUID 	= "6c6f6769-7473-11ab-82a8-0242ac130003";
-			var REQUEST_CHAR_UUID 	= "6c6f6769-7473-11ab-42ac-600030ea28ec";
-			var RESPONSE_CHAR_UUID 	= "6c6f6769-7473-11ab-4221-5941e773ee71";
-			var CNTRL_CHAR_UUID		= "e2048b39-d4f9-4a45-9f25-1856c10d5639";
+			var EKAMKEY_SVC_UUID 	    = "6c6f6769-7473-11ab-82a8-0242ac130003";
+			var EKAMKEY_USERPASS_UUID 	= "6c6f6769-7473-11ab-42ac-600030ea28ec";
+			var EKAMKEY_DOMAIN_UUID 	= "6c6f6769-7473-11ab-4221-5941e773ee71";
+			var CNTRL_CHAR_UUID		    = "e2048b39-d4f9-4a45-9f25-1856c10d5639";
 
 			// Display text in log field text area 
 			function log(text)
@@ -77,19 +77,14 @@
 					// Define a scan filter and prepare for interaction with ekamkey Service
 					log('Requesting Bluetooth Device...');
 					device  = await navigator.bluetooth.requestDevice({
-<<<<<<< HEAD
                         filters: [{services : [EKAMKEY_SVC_UUID]}]
-=======
-						filters: [{name : 'OnePlus 3T'}],
-						optionalServices: [EKAMKEY_SVC_UUID]
->>>>>>> e3c8c28d02945d70da41efb3aa1a310b94284afa
 					});	
 					device.addEventListener('gattserverdisconnected', onDisconnected);	
 					// Connect to device GATT and perform attribute discovery
 					server = await device.gatt.connect();
 
 					const service = await server.getPrimaryService(EKAMKEY_SVC_UUID);
-					inboundChar = await service.getCharacteristic(REQUEST_CHAR_UUID);
+					inboundChar = await service.getCharacteristic(EKAMKEY_USERPASS_UUID);
 
 					//outboundChar = await service.getCharacteristic(RESPONSE_CHAR_UUID);
                     //const flowcontrolChar = await service.getCharacteristic(CNTRL_CHAR_UUID);
